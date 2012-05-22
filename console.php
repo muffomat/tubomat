@@ -21,4 +21,5 @@
         die;
     }
     call_user_func_array(array($operator, $command), $parts);
+
 ?>

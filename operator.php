@@ -2,6 +2,9 @@
 class Operator {
     const PAGER = 50;
 
+    /**
+     * help
+     */
     public function execHelp() {
         echo 'List of commands:<br />';
 
@@ -18,6 +21,11 @@ class Operator {
         }
     }
 
+    /**
+     * favorites
+     * @param string $username
+     * @param int $start
+     */
     public function execFav($username = '', $start = 0) {
 
         $page = round(1 + (($start - 1) / self::PAGER));
@@ -50,6 +58,11 @@ class Operator {
         echo '<a href="#" onclick="exec(\'fav '.$username.' '.($start + self::PAGER).'\');">next >></a>';
     }
 
+    /**
+     * uploads
+     * @param string $username
+     * @param int $start
+     */
     public function execUps($username = '', $start = 0) {
 
         $page = round(1 + (($start - 1) / self::PAGER));
@@ -77,6 +90,9 @@ class Operator {
         echo '<a href="#" onclick="exec(\'ups '.$username.' '.($start + self::PAGER).'\');">next >></a>';
     }
 
+    /**
+     * search
+     */
     public function execQuery() {
 
         // build search string
