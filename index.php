@@ -19,6 +19,8 @@
                     </div>
                     <div id="results_2">
                     </div>
+                    <div id="results_3">
+                    </div>
                 </div>
             </div>
             <div id="playbar">
@@ -44,6 +46,7 @@
                 </div>
             </div>
             <div id="player_box">
+                <div id="fix">fix</div>
                 <div id="video">
                     <object type="application/x-shockwave-flash" id="player" data="http://www.youtube.com/apiplayer?version=3&amp;video_id=u1zgFlCw8Aw&amp;enablejsapi=1&amp;playerapiid=ytplayer" width="290" height="240">
                         <param name="allowScriptAccess" value="always">

@@ -36,20 +36,16 @@ class Operator {
         }
     }
 
-    /**
-     * list favorites of user
-     * usage: fav [username] [entry offset]
-     * @param string $username
-     * @param int $start
-     */
-    public function execFav($username = '', $start = 0) {
+    private function showList($titlePrefix, $commandPrefix, $commandFormat, $query, $offset) {
+        $page = round(1 + ($offset / self::PAGER));
 
-        $page = round(1 + (($start - 1) / self::PAGER));
+        echo "$titlePrefix '$query' Page $page: <br />";
 
-        echo "Favorites of '$username' Page $page: <br />";
+        // build command
+        $command = 'https://gdata.youtube.com'.sprintf($commandFormat, urlencode($query), $offset + 1, self::PAGER);
 
         // get xml
-        $xml = simplexml_load_file("https://gdata.youtube.com/feeds/api/users/$username/favorites?max-results=".self::PAGER."&start-index=".($start + 1)."&v=2");
+        $xml = simplexml_load_file($command);
         foreach($xml->entry as $entry) {
             $id = (String)$entry->link['href'];
 
@@ -66,12 +62,22 @@ class Operator {
             }
 
             $title = (String)$entry->title;
-            echo '<a class="video_link" rel="'.$id.'" href="#"">'.htmlspecialchars($title).'</a><br />';
+            echo '<a class="video_link" rel="'.$id.'" href="#"">'.htmlspecialchars($title).'</a>';
         }
 
-        if($start != 0)
-            echo '<a href="#" onclick="exec(\'fav '.$username.' '.($start - self::PAGER).'\');"><< prev</a>&nbsp;&nbsp;&nbsp;';
-        echo '<a href="#" onclick="exec(\'fav '.$username.' '.($start + self::PAGER).'\');">next >></a>';
+        if($offset != 0)
+            echo '<a href="#" onclick="return exec(\''.$commandPrefix.' '.$query.' '.($offset - self::PAGER).'\');"><< prev</a>&nbsp;&nbsp;&nbsp;';
+        echo '<a href="#" onclick="return exec(\''.$commandPrefix.' '.$query.' '.($offset + self::PAGER).'\');">next >></a>';
+    }
+
+    /**
+     * list favorites of user
+     * usage: fav [username] [entry offset]
+     * @param string $username
+     * @param int $start
+     */
+    public function execFav($username = '', $start = 0) {
+        $this->showList('Favorites of', 'fav', '/feeds/api/users/%1$s/favorites?max-results=%3$s&start-index=%2$s&v=2', $username, $start);
     }
 
     /**
@@ -81,30 +87,7 @@ class Operator {
      * @param int $start
      */
     public function execUps($username = '', $start = 0) {
-
-        $page = round(1 + (($start - 1) / self::PAGER));
-
-        echo "Uploads of '$username' Page $page: <br />";
-
-        // get xml
-        $xml = simplexml_load_file("https://gdata.youtube.com/feeds/api/users/$username/uploads?max-results=".self::PAGER."&start-index=".($start + 1)."&v=2");
-        foreach($xml->entry as $entry) {
-            $id = (String)$entry->link['href'];
-
-            // get correct id
-            $url = parse_url($id);
-            if(!array_key_exists('query', $url))
-                continue;
-            parse_str($url['query'], $params);
-            $id = $params['v'];
-
-            $title = (String)$entry->title;
-            echo '<a class="video_link" rel="'.$id.'" href="#"">'.htmlspecialchars($title).'</a><br />';
-        }
-
-        if($start != 0)
-            echo '<a href="#" onclick="exec(\'ups '.$username.' '.($start - self::PAGER).'\');"><< prev</a>&nbsp;&nbsp;&nbsp;';
-        echo '<a href="#" onclick="exec(\'ups '.$username.' '.($start + self::PAGER).'\');">next >></a>';
+        $this->showList('Uploads of', 'ups', '/feeds/api/users/%1$s/uploads?max-results=%3$s&start-index=%2$s&v=2', $username, $start);
     }
 
     /**
@@ -112,7 +95,6 @@ class Operator {
      * usage: query [term ...] [(int)entry offset]
      */
     public function execQuery() {
-
         // build search string
         $query = array();
         $start = 0;
@@ -126,30 +108,6 @@ class Operator {
         }
         $query = implode(' ', $query);
 
-        $page = round(1 + ($start / self::PAGER));
-
-        echo "Search results for '$query' Page $page: <br />";
-
-        $search = urlencode($query);
-
-        // get xml
-        $xml = simplexml_load_file("https://gdata.youtube.com/feeds/api/videos?max-results=".self::PAGER."&start-index=".($start + 1)."&v=2&q=$search");
-        foreach($xml->entry as $entry) {
-            $id = (String)$entry->link['href'];
-
-            // get correct id
-            $url = parse_url($id);
-            if(!array_key_exists('query', $url))
-                continue;
-            parse_str($url['query'], $params);
-            $id = $params['v'];
-
-            $title = (String)$entry->title;
-            echo '<a class="video_link" rel="'.$id.'" href="#"">'.htmlspecialchars($title).'</a><br />';
-        }
-
-        if($start != 0)
-            echo '<a href="#" onclick="exec(\'query '.$query.' '.($start - self::PAGER).'\');"><< prev</a>&nbsp;&nbsp;&nbsp;';
-        echo '<a href="#" onclick="exec(\'query '.$query.' '.($start + self::PAGER).'\');">next >></a>';
+        $this->showList('Search results for', 'query', '/feeds/api/videos?max-results=%3$s&start-index=%2$s&v=2&q=%1$s', $query, $start);
     }
 }

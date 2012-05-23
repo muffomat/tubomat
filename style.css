@@ -73,12 +73,41 @@ table {
 }
 
 #console #results a {
-    color:black;
+    color:white;
+    text-decoration:none;
+    display:block;
+    float:left;
+    padding:5px;
+    background:#565656;
+    border:1px solid #232323;
+    margin-right:5px;
+    margin-top:2px;
+    margin-bottom:3px;
 }
 
+#console #results #results_1,
 #console #results #results_2,
-#console #results #results_2 a {
+#console #results #results_3
+{
+    clear:left;
+}
+
+#console #results #results_2{
     color:#565656;
+}
+
+#console #results #results_2 a {
+    background:#787878;
+    border:1px solid #454545;
+}
+
+#console #results #results_3{
+    color:#676767;
+}
+
+#console #results #results_3 a {
+    background:#898989;
+    border:1px solid #565656;
 }
 
 #console input {
@@ -109,16 +138,33 @@ table {
     border-top:1px solid #565656;
     border-left:1px solid #565656;
     bottom:0px;
-    right:0px;
+    right:-1000px;
     width:15px;
     height:15px;
-    overflow:hidden;
+}
+
+#player_box #fix {
+    background:#ababab;
+    display:none;
+    cursor:pointer;
+    position:absolute;
+    width:15px;
+    height:15px;
+    top:-17px;
+    font-size:14px;
+    text-align:center;
+    width:60px;
+    font-weight:bold;
+    left:-1px;
+    border-top:1px solid #565656;
+    border-left:1px solid #565656;
+    border-right:1px solid #676767;
 }
 
 #player_box #video {
     position:absolute;
-    top:-1000px;
-    left:-1000px;
+    top:5px;
+    left:-4000px;
 }
 
 #player_box.hover {
@@ -129,6 +175,11 @@ table {
 #player_box.hover #video {
     top:5px;
     left:5px;
+}
+
+
+#player_box.hover #fix {
+    display:block;
 }
 
 #player_box #image {

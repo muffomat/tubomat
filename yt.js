@@ -13,6 +13,7 @@ $(function() {
     var $resume = $('#resume');
     var $search = $('#search_overlay');
     var $player = $('#player_box');
+    var $fix = $('#player_box #fix');
     $pause.click(function() {
         pause();
     });
@@ -50,26 +51,61 @@ $(function() {
         $that.data('hovered', false);
         setTimeout(
             function() {
-                if($that.data('hovered'))
+                if($that.data('hovered') || $that.data('fix'))
                     return;
                 $that.removeClass('hover');
             },
             2000
         );
     });
+    $fix.click(function() {
+        if(!$player.data('fix')) {
+            $player.data('fix', true);
+            $(this).text('fixed');
+        }
+        else {
+            $player.data('fix', false);
+            $(this).text('fix');
+        }
+    });
+
+    var $body = $('body');
+    setTimeout(
+        function() {
+            setInterval(
+                function() {
+                    var hash = decodeURIComponent(window.location.hash).substr(1);
+                    if($body.data('hashy')) {
+                        $body.data('hashy', false);
+                        $body.data('last_hash', hash)
+                        return;
+                    }
+                    if($body.data('last_hash') != hash) {
+                        $body.data('last_hash', hash)
+                        exec(decodeURIComponent(hash));
+                    }
+                },
+                500
+            )
+        },
+        800
+    );
 });
 
 var exec = function(command) {
+    $('body').data('hashy', true);
+    window.location.hash = encodeURIComponent(command);
     var $input = $('#inputline');
     $input.val(command);
+    $('#results_3').html($('#results_2').html());
     $('#results_2').html($('#results_1').html());
-    $('#results_1').html('loading').load(
+    $('#results_1').html('').load(
         'console.php',
         {
             command: command
         },
         function() {
-            var $links = $('#results_1 .video_link');
+            var $links = $('#results .video_link');
             $links.each(function() {
                 $(this).click(function() {
                     play($(this).attr('rel'), $(this).text());
@@ -80,14 +116,17 @@ var exec = function(command) {
                     $('#image').show().find('img').attr('src', 'http://img.youtube.com/vi/'+$(this).attr('rel')+'/hqdefault.jpg');
                 });
                 $(this).mouseout(function() {
-                    $('#player_box').removeClass('hover');
-                    if(!$('#player_box').data('shown'))
-                        $('#player_box').css('right', '-1000px');
+                    if(!$('#player_box').data('fix')) {
+                        $('#player_box').removeClass('hover');
+                        if(!$('#player_box').data('shown'))
+                            $('#player_box').css('right', '-1000px');
+                    }
                     $('#image').hide();
                 });
             });
         }
     );
+    return false;
 }
 
 var initBar = function() {
@@ -97,7 +136,7 @@ var initBar = function() {
     $playBar.show();
     $('#player_box').css('bottom', '50px').css('right', '0px').data('shown', true);
     $playBar.data('inited', true);
-    setInterval('updateNavigator();', 150);
+    setInterval('updateNavigator();', 175);
 }
 
 var getPlayer = function() {
