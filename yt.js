@@ -12,6 +12,7 @@ $(function() {
     var $pause = $('#pause');
     var $resume = $('#resume');
     var $search = $('#search_overlay');
+    var $player = $('#player_box');
     $pause.click(function() {
         pause();
     });
@@ -40,6 +41,22 @@ $(function() {
         // calculate position
         searchToPercentage(left/width);
     });
+    $player.mouseover(function() {
+        $(this).data('hovered', true);
+        $(this).addClass('hover');
+    });
+    $player.mouseout(function() {
+        var $that = $(this);
+        $that.data('hovered', false);
+        setTimeout(
+            function() {
+                if($that.data('hovered'))
+                    return;
+                $that.removeClass('hover');
+            },
+            2000
+        );
+    });
 });
 
 var exec = function(command) {
@@ -50,6 +67,25 @@ var exec = function(command) {
         'console.php',
         {
             command: command
+        },
+        function() {
+            var $links = $('#results_1 .video_link');
+            $links.each(function() {
+                $(this).click(function() {
+                    play($(this).attr('rel'), $(this).text());
+                    return false;
+                });
+                $(this).mouseover(function() {
+                    $('#player_box').addClass('hover').css('right', '0px');
+                    $('#image').show().find('img').attr('src', 'http://img.youtube.com/vi/'+$(this).attr('rel')+'/hqdefault.jpg');
+                });
+                $(this).mouseout(function() {
+                    $('#player_box').removeClass('hover');
+                    if(!$('#player_box').data('shown'))
+                        $('#player_box').css('right', '-1000px');
+                    $('#image').hide();
+                });
+            });
         }
     );
 }
@@ -59,6 +95,7 @@ var initBar = function() {
     if($playBar.data('inited'))
         return;
     $playBar.show();
+    $('#player_box').css('bottom', '50px').css('right', '0px').data('shown', true);
     $playBar.data('inited', true);
     setInterval('updateNavigator();', 150);
 }

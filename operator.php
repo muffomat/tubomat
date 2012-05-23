@@ -3,10 +3,10 @@ class Operator {
     const PAGER = 50;
 
     /**
-     * help
+     * display this help
      */
     public function execHelp() {
-        echo 'List of commands:<br />';
+        echo 'List of commands:<br />-------------------------<br />';
 
         $ref = new ReflectionClass($this);
         $methods = $ref->getMethods();
@@ -17,12 +17,28 @@ class Operator {
             $name = $method->getName();
             if(!preg_match('#exec.*#', $name))
                 continue;
-            echo mb_strtolower(substr($name, mb_strlen('exec'))).'<br />';
+            $command = mb_strtolower(substr($name, mb_strlen('exec')));
+            $descriptions = explode("\n", $method->getDocComment());
+            array_shift($descriptions);
+            array_pop($descriptions);
+            foreach($descriptions as $key => $desc) {
+                $desc = trim($desc);
+                if(($pos = strpos($desc, '@')) !== false && $pos <= 2)
+                    unset($descriptions[$key]);
+                else {
+                    $descriptions[$key] = trim(mb_substr($desc, strpos($desc, '*') + 1));
+                }
+            }
+            echo $command;
+            foreach($descriptions as $desc)
+                echo '<br />&nbsp;&nbsp;&nbsp;'.$desc;
+            echo '<br />';
         }
     }
 
     /**
-     * favorites
+     * list favorites of user
+     * usage: fav [username] [entry offset]
      * @param string $username
      * @param int $start
      */
@@ -50,7 +66,7 @@ class Operator {
             }
 
             $title = (String)$entry->title;
-            echo '<a href="#" onclick="play(\''.$id.'\', $(this).text())">'.htmlspecialchars($title).'</a><br />';
+            echo '<a class="video_link" rel="'.$id.'" href="#"">'.htmlspecialchars($title).'</a><br />';
         }
 
         if($start != 0)
@@ -59,7 +75,8 @@ class Operator {
     }
 
     /**
-     * uploads
+     * list uploads of user
+     * usage: ups [username] [entry offset]
      * @param string $username
      * @param int $start
      */
@@ -82,7 +99,7 @@ class Operator {
             $id = $params['v'];
 
             $title = (String)$entry->title;
-            echo '<a href="#" onclick="play(\''.$id.'\', $(this).text())">'.htmlspecialchars($title).'</a><br />';
+            echo '<a class="video_link" rel="'.$id.'" href="#"">'.htmlspecialchars($title).'</a><br />';
         }
 
         if($start != 0)
@@ -91,7 +108,8 @@ class Operator {
     }
 
     /**
-     * search
+     * query by a search term
+     * usage: query [term ...] [(int)entry offset]
      */
     public function execQuery() {
 
@@ -127,7 +145,7 @@ class Operator {
             $id = $params['v'];
 
             $title = (String)$entry->title;
-            echo '<a href="#" onclick="play(\''.$id.'\', $(this).text())">'.htmlspecialchars($title).'</a><br />';
+            echo '<a class="video_link" rel="'.$id.'" href="#"">'.htmlspecialchars($title).'</a><br />';
         }
 
         if($start != 0)

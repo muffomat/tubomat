@@ -104,8 +104,45 @@ table {
 }
 
 #player_box {
+    background:grey;
+    position:fixed;
+    border-top:1px solid #565656;
+    border-left:1px solid #565656;
+    bottom:0px;
+    right:0px;
+    width:15px;
+    height:15px;
+    overflow:hidden;
+}
+
+#player_box #video {
     position:absolute;
     top:-1000px;
+    left:-1000px;
+}
+
+#player_box.hover {
+    width:300px;
+    height:250px;
+}
+
+#player_box.hover #video {
+    top:5px;
+    left:5px;
+}
+
+#player_box #image {
+    background:black;
+    position:absolute;
+    top:5px;
+    left:5px;
+    width:290px;
+    padding-top:10px;
+    box-sizing:border-box;
+    height:240px;
+    overflow:hidden;
+    vertical-align:middle;
+    z-index:2000;
 }
 
 #playbar .btn {

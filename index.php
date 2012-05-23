@@ -44,10 +44,16 @@
                 </div>
             </div>
             <div id="player_box">
-                <object type="application/x-shockwave-flash" id="player" data="http://www.youtube.com/apiplayer?version=3&amp;video_id=u1zgFlCw8Aw&amp;enablejsapi=1&amp;playerapiid=ytplayer" width="640" height="360">
-                    <param name="allowScriptAccess" value="always">
-                    <param name="bgcolor" value="#ffffff">
-                </object>
+                <div id="video">
+                    <object type="application/x-shockwave-flash" id="player" data="http://www.youtube.com/apiplayer?version=3&amp;video_id=u1zgFlCw8Aw&amp;enablejsapi=1&amp;playerapiid=ytplayer" width="290" height="240">
+                        <param name="allowScriptAccess" value="always">
+                        <param name="bgcolor" value="#ffffff">
+                        <param name="wmode" value="opaque">
+                    </object>
+                </div>
+                <div id="image" style="display:none;">
+                    <img src="" width="290" height="" />
+                </div>
             </div>
         </div>
     </body>
