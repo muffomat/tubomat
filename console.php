@@ -10,6 +10,10 @@
     $query = mb_strtolower($_REQUEST['command']);
     $parts = preg_split('#\\s#', $query);
 
+    // check length
+    if(mb_strlen($query) === 0)
+        die;
+
     // get args
     $plainCommand = array_shift($parts);
     $command = 'exec'.ucfirst($plainCommand);
