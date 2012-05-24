@@ -82,7 +82,9 @@ $(function() {
                     }
                     if($body.data('last_hash') != hash) {
                         $body.data('last_hash', hash)
-                        exec(decodeURIComponent(hash));
+                        var command = decodeURIComponent(hash);
+                        if(command.trim().length > 0)
+                            exec(command);
                     }
                 },
                 500
